@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToDo List</title>
+</head>
+<body>
+    <h1>ToDo List</h1>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>title</th>
+            <th>作成日時</th>
+            <th></th>
+        </tr>
+        <tr th:each="m: ${todolist}">
+            <td>[[${m.seq}]]</td>
+            <td>[[${m.title}]]</td>
+            <td>[[${m.createdAt}]]</td>
+            <td><a th:href=@{/__${mid}__/todos/__${m.seq}__/done}>完了</a></td>
+        </tr>
+    </table>
+
+    <h2>ToDoの登録</h2>
+    <form role="form" th:action="@{/__${mid}__/todos/register}" th:object="${ToDoForm}" method="post">
+        <table>
+            <tr>
+                <td><label>ToDoタイトル: </label></td>
+                <td><input type="text" required th:field="*{title}" /></td>
+            </tr>
+        </table>
+        <p><input type="submit" value="登録" /></p>
+    </form>
+
+    <h1>Done List</h1>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>title</th>
+            <th>完了日時</th>
+            <th></th>
+        </tr>
+        <tr th:each="m: ${donelist}">
+            <td>[[${m.seq}]]</td>
+            <td>[[${m.title}]]</td>
+            <td>[[${m.doneAt}]]</td>
+            <td><input type="submit" value="未完了"></td>
+        </tr>
+    </table>
+
+</body>
+</html>
