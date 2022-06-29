@@ -1,5 +1,6 @@
 package jp.kobespiral.matsumoto.todo.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.engine.jdbc.spi.ResultSetReturn;
@@ -24,15 +25,20 @@ public class ToDoController {
     ToDoService tService;
 
     @GetMapping("")
-    String Login(Model model){
+    String showLogin(Model model){
         LoginForm loginform = new LoginForm();
         model.addAttribute("LoginForm", loginform);
         return "index";
     }
 
+    @GetMapping("/login")
+    String login(LoginForm form, Model model){
+        String mid = form.getMid();
+        return "redirect:/" + mid + "/todos";
+    }
 
     @GetMapping("/{mid}/todos")
-    String showList(@PathVariable String mid, @ModelAttribute(name = "LoginForm") LoginForm loginform, Model model){
+    String showList(@PathVariable String mid, Model model){
         ToDoForm todoform = new ToDoForm();
         model.addAttribute("ToDoForm", todoform);
         List<ToDo> todolist = tService.getToDoList(mid);
@@ -46,20 +52,34 @@ public class ToDoController {
     @PostMapping("/{mid}/todos/register")
     String showNewList(@PathVariable String mid , @ModelAttribute(name = "ToDoForm") ToDoForm todoform, Model model){
         tService.createToDo(mid, todoform);
-        List<ToDo> todolist = tService.getToDoList(mid);
-        model.addAttribute("todolist", todolist);
-        List<ToDo> donelist = tService.getDoneList(mid);
-        model.addAttribute("donelist", donelist);
-        return "list";
+        return "redirect:/" + mid + "/todos";
     }
 
     @GetMapping("/{mid}/todos/{seq}/done")
-    String doneToDo(@PathVariable String mid, @PathVariable Long seq, Model model){
-        tService.getToDo(seq).setDone(true);
-        List<ToDo> todolist = tService.getToDoList(mid);
+    String doneToDo(@PathVariable String mid, @PathVariable Long seq, @ModelAttribute(name="ToDoForm") ToDoForm todoform, Model model){
+        ToDo t = tService.getToDo(seq);
+        t.setDone(true);
+        t.setDoneAt(new Date());
+        tService.updateToDo(t);
+        return "redirect:/" + mid + "/todos";
+    }
+
+    @GetMapping("/{mid}/todos/{seq}/not_done")
+    String notDoneToDo(@PathVariable String mid, @PathVariable Long seq, @ModelAttribute(name="ToDoForm") ToDoForm todoform, Model model){
+        ToDo t = tService.getToDo(seq);
+        t.setDone(false);
+        tService.updateToDo(t);
+
+        return "redirect:/" + mid + "/todos";
+    }
+
+    @GetMapping("/{mid}/all/todos")
+    String allToDo(@PathVariable String mid, Model model){
+        model.addAttribute("mid", mid);
+        List<ToDo> todolist = tService.getToDoList();
         model.addAttribute("todolist", todolist);
-        List<ToDo> donelist = tService.getDoneList(mid);
+        List<ToDo> donelist = tService.getDoneList();
         model.addAttribute("donelist", donelist);
-        return "list";
+        return "alllist";
     }
 }

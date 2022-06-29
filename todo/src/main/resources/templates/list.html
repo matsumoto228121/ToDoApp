@@ -7,13 +7,15 @@
     <title>ToDo List</title>
 </head>
 <body>
+    <h1>自分のToDo管理画面</h1>
+    <h1><a th:href=@{/__${mid}__/all/todos}>みんなのToDo一覧</a></h1>
     <h1>ToDo List</h1>
     <table border="1">
         <tr>
             <th>ID</th>
             <th>title</th>
             <th>作成日時</th>
-            <th></th>
+            <th>　　</th>
         </tr>
         <tr th:each="m: ${todolist}">
             <td>[[${m.seq}]]</td>
@@ -40,13 +42,13 @@
             <th>ID</th>
             <th>title</th>
             <th>完了日時</th>
-            <th></th>
+            <th>　　　</th>
         </tr>
         <tr th:each="m: ${donelist}">
             <td>[[${m.seq}]]</td>
             <td>[[${m.title}]]</td>
             <td>[[${m.doneAt}]]</td>
-            <td><input type="submit" value="未完了"></td>
+            <td><a th:href="@{/__${mid}__/todos/__${m.seq}__/not_done}">未完了</a></td>
         </tr>
     </table>
 

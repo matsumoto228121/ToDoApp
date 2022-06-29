@@ -30,6 +30,10 @@ public class ToDoService {
         return tRepo.save(t);
     }
 
+    public void updateToDo(ToDo todo){
+        tRepo.save(todo);
+    }
+
     /**
      * 番号を指定してToDoを取得
      * @param seq
